@@ -24,6 +24,7 @@ class Header extends Component {
 				placeholder="What's on your mind?"
 				blurOnSubmit={false}
 				returnKeyType='done'
+				underlineColorAndroid='transparent'
 				style={styles.input}
       />
       </View>
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
 	},
 	input: {
 		flex: 1,
-		height: 50
+		height: 100
 	},
 	toggleIcon: {
 		fontSize: 24,

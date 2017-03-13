@@ -36,6 +36,8 @@ class App extends Component {
       dataSource: ds.cloneWithRows([])
 	  };
 
+	  this.handleUpdateText = this.handleUpdateText.bind(this);
+	  this.handleToggleEditing = this.handleToggleEditing.bind(this);
 	  this.handleFilterItem = this.handleFilterItem.bind(this);
 	  this.handleClearComplete = this.handleClearComplete.bind(this);
 	  this.handleRemoveItem = this.handleRemoveItem.bind(this);
@@ -66,13 +68,37 @@ class App extends Component {
 		})
 		AsyncStorage.setItem('items', JSON.stringify(items));
 	}
+
 	handleClearComplete(){
 		const newItems = filterItems('ACTIVE', this.state.items);
 		this.setSource(newItems, filterItems(this.state.filter, newItems));
 	}
+
+	handleUpdateText(key, text){
+		const newItems = this.state.items.map((item)=>{
+			if(item.key !== key) return item;
+			return {
+				...item,
+				text
+			}
+		})
+		this.setSource(newItems, filterItems(this.state.filter, newItems));
+	}
+
+	handleToggleEditing(key, editing){
+		const newItems = this.state.items.map((item)=>{
+			if(item.key !== key) return item;
+			return {
+				...item,
+				editing
+			}
+		})
+		this.setSource(newItems, filterItems(this.state.filter, newItems));
+	}
+
 	handleToggleComplete(key, complete) {
 		const newItems = this.state.items.map((item)=>{
-			if(item.key !== key) return item
+			if(item.key !== key) return item;
 			return {
 				...item,
 				complete
@@ -134,6 +160,8 @@ class App extends Component {
 								<Row 
 									key={key} 
 									{...value}
+									onUpdate={(text)=>this.handleUpdateText(key, text)}
+									onEdit={(editing)=>this.handleToggleEditing(key, editing)}
 									onRemove={()=> this.handleRemoveItem(key)} 
 									onComplete={(complete)=> this.handleToggleComplete(key, complete)}/>
       				)
