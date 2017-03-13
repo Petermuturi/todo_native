@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Switch } from 'react-native';
+import { StyleSheet, View, Text, Switch, TouchableOpacity } from 'react-native';
 
 class Row extends Component {
   render() {
-  	const { data } = this.props;
     return (
       <View style={styles.container}>
 				<Switch
-					value={data.complete}
+					value={this.props.complete}
+					onValueChange={this.props.onComplete}
 				/>
 				<View style={styles.text_wrap}>
-      		<Text style={[styles.text, data.complete && styles.complete]}>{data.text}</Text>
+      		<Text style={[styles.text, this.props.complete && styles.complete]}>
+      			{this.props.text}
+      		</Text>
 				</View>
+				<TouchableOpacity onPress={this.props.onRemove}>
+					<Text style={styles.destroy}>x</Text>
+				</TouchableOpacity>
       </View>
     );
   }
@@ -31,6 +36,10 @@ const styles = StyleSheet.create({
 	complete: {
 		textDecorationLine: 'line-through',
 		color: 'rgba(0,0,0,0.3)'
+	},
+	destroy: {
+		fontSize: 20,
+		color: '#cc9a9a'
 	},
 	text: {
 		fontSize: 20,
