@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
+  Text,
   Platform,
   ListView,
   Keyboard,
@@ -141,6 +142,7 @@ class App extends Component {
 	}
 
   render() {
+  	const length = filterItems('ACTIVE', this.state.items).length;
     return (
       <View style={styles.container}>
       	<Header
@@ -170,9 +172,17 @@ class App extends Component {
       				return <View key={rowId} style={styles.separator} />
       			}}
       		/>
+      		{
+      			length === 0 &&
+      			<View style={styles.blank}>
+	      			<Text style={styles.blankText}>
+	      				Nothing to do yet...
+	      			</Text>
+      			</View>
+      		}
       	</View>
       	<Footer
-      		count={filterItems('ACTIVE', this.state.items).length}
+      		count={length}
       		onClearComplete={this.handleClearComplete}
       		onFilter={this.handleFilterItem}
       		filter={this.state.filter}
@@ -214,6 +224,15 @@ const styles = StyleSheet.create({
 	},
 	list: {
 		backgroundColor: '#fff'
+	},
+	blank: {
+		flex:1,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		backgroundColor: '#fff',
+	},
+	blankText: {
+		fontSize: 15
 	},
 	separator: {
 		borderWidth: 1,
