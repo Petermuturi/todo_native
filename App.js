@@ -227,7 +227,7 @@ class App extends Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#F5F5F5',
+		backgroundColor: '#C9E4F9',
 		...Platform.select({
 			ios: { paddingTop: 30 }
 		})
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
 	},
 	separator: {
 		borderWidth: 1,
-		borderColor: '#f5f5f5'
+		borderColor: '#032946'
 	}
 });
 

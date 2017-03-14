@@ -44,6 +44,7 @@ class Footer extends Component {
 const styles = StyleSheet.create({
 	container: {
 		padding: 16,
+		backgroundColor: '#032946',
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between'
@@ -59,13 +60,14 @@ const styles = StyleSheet.create({
 		borderColor: 'transparent'
 	},
 	selected: {
-		borderColor: 'rgba(0,0,0,0.3)'
+		borderColor: '#C9E4F9'
 	},
 	footer: {
-		fontSize:12
+		fontSize:12,
+		color: '#fff'
 	},
 	clear: {
-		color: '#cc9a9a'
+		color: '#f4d0d0'
 	}
 });
 

@@ -39,9 +39,7 @@ class Row extends Component {
 			let time_sec = time * 60;
 			let message = this.props.text;
 			let date = new Date(Date.now() + (time_sec * 1000));
-			if (Platform.OS === 'ios') {
-				date = date.toISOString();
-			}
+
 				PushNotification.localNotificationSchedule({
 				  message: "Remember to "+message+"!",
 				  date,
@@ -195,6 +193,7 @@ const styles = StyleSheet.create({
 	modal: {
 		paddingTop:145,
 		flex: 1,
+		backgroundColor: '#C9E4F9',
 		alignItems: 'center',
 		justifyContent: 'center'
 	},
@@ -222,7 +221,7 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		fontSize: 20,
-		color: '#4d4d4d'
+		color: '#032946'
 	}
 });
 

@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
 	},
 	input: {
 		flex: 1,
+		color: '#075795',
 		height: 100
 	},
 	toggleIcon: {
