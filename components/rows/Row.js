@@ -86,10 +86,10 @@ class Row extends Component {
 				        underlineColorAndroid='transparent'
 			  			/>
 			  		</View>
-            <TouchableOpacity onPress={() => {
+            <TouchableOpacity style={styles.close_modal} onPress={() => {
               this.setModalVisible(!this.state.modalVisible)
             }}>
-              <Text>Hide Modal</Text>
+              <Image source={require('./add.png')} style={styles.closeButton}/>
             </TouchableOpacity>
 
           </View>
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
 		opacity: 0
 	},
 	modal: {
-		padding:55,
+		paddingTop:155,
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center'
@@ -161,6 +161,15 @@ const styles = StyleSheet.create({
 		color: '#4d4d4d',
 		textAlign: 'center',
 		fontSize: 18
+	},
+	close_modal: {
+		flex: 1,
+		marginTop:-300,
+		alignItems: 'center',
+	},
+	closeButton: {
+		width:60,
+		height:60
 	},
 	destroy: {
 		width:30,
