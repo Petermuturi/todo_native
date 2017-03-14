@@ -37,6 +37,7 @@ class App extends Component {
       dataSource: ds.cloneWithRows([])
 	  };
 
+	  this.handleTimer = this.handleTimer.bind(this);
 	  this.handleUpdateText = this.handleUpdateText.bind(this);
 	  this.handleToggleEditing = this.handleToggleEditing.bind(this);
 	  this.handleFilterItem = this.handleFilterItem.bind(this);
@@ -74,6 +75,17 @@ class App extends Component {
 		const newItems = filterItems('ACTIVE', this.state.items);
 		this.setSource(newItems, filterItems(this.state.filter, newItems));
 	}
+	
+	handleTimer(key, timer) {
+		const newItems = this.state.items.map((item)=>{
+			if(item.key !== key) return item;
+			return {
+				...item,
+				timer
+			}
+		})
+		this.setSource(newItems, filterItems(this.state.filter, newItems));
+	}
 
 	handleUpdateText(key, text){
 		const newItems = this.state.items.map((item)=>{
@@ -99,6 +111,9 @@ class App extends Component {
 
 	handleToggleComplete(key, complete) {
 		const newItems = this.state.items.map((item)=>{
+			if ((item.key === key)&&(item.timer !== undefined)){
+				item.timer = "";
+			}
 			if(item.key !== key) return item;
 			return {
 				...item,
@@ -114,6 +129,9 @@ class App extends Component {
 
 	handleRemoveItem(key) {
 		const newItems = this.state.items.filter((item)=>{
+			if ((item.key === key)&&(item.timer !== undefined)){
+				item.timer = "";
+			}
 			return item.key !== key;
 		})
 		this.setSource(newItems, filterItems(this.state.filter, newItems));
@@ -121,9 +139,12 @@ class App extends Component {
 
 	handleToggleAllComplete(){
 		const complete = !this.state.allComplete;
+		this.state.items.map((item)=> {
+			if(item.timer !== undefined) item.timer = "";
+		})
 		const newItems = this.state.items.map((item)=> ({
 			...item,
-			complete
+			complete,
 		}));
 		this.setSource(newItems, filterItems(this.state.filter, newItems), { allComplete: complete});
 	}
@@ -142,6 +163,7 @@ class App extends Component {
 	}
 
   render() {
+  	console.log(this.state.items);
   	const length = filterItems('ACTIVE', this.state.items).length;
     return (
       <View style={styles.container}>
@@ -162,6 +184,7 @@ class App extends Component {
 								<Row 
 									key={key} 
 									{...value}
+									onTimer={(timer)=>this.handleTimer(key, timer)}
 									onUpdate={(text)=>this.handleUpdateText(key, text)}
 									onEdit={(editing)=>this.handleToggleEditing(key, editing)}
 									onRemove={()=> this.handleRemoveItem(key)} 

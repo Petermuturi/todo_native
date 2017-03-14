@@ -6,8 +6,13 @@ import {
 	Switch, 
 	TouchableOpacity, 
 	TextInput, 
-	Image, 
+	Image,
+	AppState,
+	Platform, 
 	Modal } from 'react-native';
+
+import NotificationHandler from './NotificationHandler';
+import PushNotification from 'react-native-push-notification';
 
 class Row extends Component {
 	constructor(props) {
@@ -16,6 +21,32 @@ class Row extends Component {
 	  this.state = {
 	  	modalVisible: false,
 	  };
+
+	  this.handleAppStateChange = this.handleAppStateChange.bind(this);
+	}
+
+	componentDidMount() {
+		AppState.addEventListener('change', this.handleAppStateChange);
+	}
+
+	componentWillUnmount() {
+		AppState.removeEventListener('change', this.handleAppStateChange);
+	}
+	
+	handleAppStateChange(appState){
+		if ((appState === 'background') && (this.props.timer !== undefined)) {
+			let time = parseInt(this.props.timer, 10);
+			let time_sec = time * 60;
+			let message = this.props.text;
+			let date = new Date(Date.now() + (time_sec * 1000));
+			if (Platform.OS === 'ios') {
+				date = date.toISOString();
+			}
+				PushNotification.localNotificationSchedule({
+				  message: "Remember to "+message+"!",
+				  date,
+				});
+		}
 	}
 
 	setModalVisible(visible) {
@@ -23,6 +54,8 @@ class Row extends Component {
   }
 
   render() {
+  	const time = this.props.timer === undefined ? 0 : 
+  	this.props.timer === '' ? 0 : parseInt(this.props.timer, 10);
   	const textComponent=(
 			<TouchableOpacity style={styles.text_wrap} onLongPress={()=> this.props.onEdit(true)}>
     		<Text style={[styles.text, this.props.complete && styles.complete]}>
@@ -43,10 +76,15 @@ class Row extends Component {
   		</View>
   	)
   	const removeButton=(
-  		<View style={styles.nonEdit}>
-				<TouchableOpacity onPress={() => this.setModalVisible(true)}>
-					<Image source={require('./timer.png')} style={[styles.time, this.props.complete && styles.time_out]}/>
-				</TouchableOpacity>
+  		<View style={[styles.nonEdit, this.props.timer && styles.nonEditText]}>
+				{
+					time === 0 ?
+					<TouchableOpacity onPress={() => this.setModalVisible(true)}>
+						<Image source={require('./timer.png')} style={[styles.time, this.props.complete && styles.time_out]}/>
+					</TouchableOpacity>
+					:
+					<Text style={styles.text}>{time} Min</Text>
+				}
 				<TouchableOpacity onPress={this.props.onRemove}>
 					<Image source={require('./bin.png')} style={styles.destroy}/>
 				</TouchableOpacity>
@@ -69,10 +107,11 @@ class Row extends Component {
 				<Modal
           animationType={"slide"}
           transparent={false}
+          onRequestClose={() => this.setModalVisible(false)}
           visible={this.state.modalVisible}>
          <View style={styles.modal}>
           <View>
-          	<Text style={styles.reminder}>{[0, this.props.timer && this.props.timer]} Minutes</Text>
+          	<Text style={styles.reminder}>{time} Minutes</Text>
             <Text style={styles.reminderText}>Enter Reminder Time (minutes)</Text>
 						<View style={styles.text_wrap}>
 			  			<TextInput
@@ -95,6 +134,7 @@ class Row extends Component {
           </View>
          </View>
         </Modal>
+        <NotificationHandler/>
       </View>
     );
   }
@@ -127,6 +167,12 @@ const styles = StyleSheet.create({
 		alignItems: 'flex-end',
 		justifyContent:'space-between'
 	},
+	nonEditText: {
+		flex: 0.5,
+		flexDirection: 'row',
+		alignItems: 'flex-end',
+		justifyContent:'space-between'
+	},
 	save: {
 		borderRadius: 5,
 		borderWidth: 1,
@@ -147,7 +193,7 @@ const styles = StyleSheet.create({
 		opacity: 0
 	},
 	modal: {
-		paddingTop:155,
+		paddingTop:145,
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center'
@@ -164,7 +210,6 @@ const styles = StyleSheet.create({
 	},
 	close_modal: {
 		flex: 1,
-		marginTop:-300,
 		alignItems: 'center',
 	},
 	closeButton: {
